@@ -1,1 +1,145 @@
+days[index] || {};
 
+    document.getElementById(
+        "selectedDay"
+    ).textContent =
+        "🌅 فجر " + days[index];
+
+    document.getElementById("wake").checked =
+        !!dayData.wake;
+
+    document.getElementById("stay").checked =
+        !!dayData.stay;
+
+    document.getElementById("proofCheck").checked =
+        !!dayData.proof;
+
+    document.getElementById("saved").style.display =
+        "none";
+
+    createMap();
+
+}
+
+function saveDay() {
+
+    data.days[selectedDayIndex] = {
+
+        wake:
+            document.getElementById("wake").checked,
+
+        stay:
+            document.getElementById("stay").checked,
+
+        proof:
+            document.getElementById("proofCheck").checked
+
+    };
+
+    localStorage.setItem(
+        "sanabelFajr",
+        JSON.stringify(data)
+    );
+
+    document.getElementById("saved").style.display =
+        "block";
+
+    updateStats();
+
+    createMap();
+
+}
+
+function updateStats() {
+
+    let steps = 0;
+    let energy = 0;
+    let proof = 0;
+
+    Object.values(data.days).forEach(function(day) {
+
+        if(day.wake) steps++;
+
+        if(day.stay) energy++;
+
+        if(day.proof) proof++;
+
+    });
+
+    document.getElementById("steps").textContent =
+        steps;
+
+    document.getElementById("energy").textContent =
+        energy;
+
+    document.getElementById("proof").textContent =
+        proof;
+
+    const total =
+        steps + energy + proof;
+
+    const percentage =
+        Math.min(
+            100,
+            Math.round((total / 21) * 100)
+        );
+
+    document.getElementById("progress").style.width =
+        percentage + "%";
+
+    let level = "🌱 بذرة";
+
+    if(total >= 6)
+        level = "🌿 برعم";
+
+    if(total >= 12)
+        level = "🌾 سنبلة صغيرة";
+
+    if(total >= 18)
+        level = "🌻 سنبلة";
+
+    document.getElementById("level").textContent =
+        level;
+
+    if(steps >= 7 && energy >= 7) {
+
+        document
+            .getElementById("message")
+            .classList.add("show");
+
+    } else {
+
+        document
+            .getElementById("message")
+            .classList.remove("show");
+
+    }
+
+}
+
+function showWelcome() {
+
+    const welcome =
+        document.getElementById("welcome");
+
+    if(data.name) {
+
+        welcome.textContent =
+            "أهلًا " + data.name + " 🌿";
+
+    } else {
+
+        welcome.textContent = "";
+
+    }
+
+}
+
+showWelcome();
+createMap();
+updateStats();
+
+</script>
+
+</body>
+</html>
